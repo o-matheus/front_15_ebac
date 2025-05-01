@@ -3,6 +3,7 @@
 ## Menu
 [Aula 1 - Node JS](#aula-1---node-js)  
 [Aula 2 - Sintaxe SASS e SCSS](#aula-2---sintaxe-sass-e-scss)  
+[Aula 3 - Variáveis e estrutura no sass(SASS) ](#aula-3---variáveis-e-estrutura-no-sass-sass)  
 
 ## Aula 1 - Node JS
 
@@ -208,6 +209,213 @@ Abrimos no navegador com **Live Server**.
 No DevTools, ao inspecionar os elementos, vemos que:
 - As estilizações aparecem como se tivessem sido feitas no `main.scss`
 - Isso acontece graças ao arquivo `main.css.map`, que faz a ligação entre SCSS e CSS
+
+## Aula 3 - Variáveis e Estrutura no Sass (SASS)
+
+Nesta aula, aprendemos a **declarar variáveis no Sass**, organizar os arquivos do projeto e aplicar estruturas como **aninhamento de seletores**, **pseudo-classes** e **condicionais com classes**.
+
+### Estrutura Inicial
+
+Começamos a aula **excluindo os arquivos** `main.css`, `main.css.map` e `main.scss`, pois o professor reorganizou a estrutura do projeto.
+
+No VS Code, criamos:
+- Uma pasta chamada `source`, onde ficará o arquivo-fonte `.scss`.
+- Dentro de `source`, uma pasta chamada `dist` (apesar de não ter sido usada diretamente nesta aula).
+- Fora da `source`, uma pasta `build`, onde o Sass gerará o CSS final.
+
+### Atualização do package.json
+
+Alteramos o script do `package.json` para definir o arquivo de entrada e saída da compilação Sass:
+
+```json
+"scripts": {
+  "sass": "sass source/main.scss build/main.css"
+}
+```
+
+Esse script permite executar a compilação com:
+
+```bash
+npm run sass
+```
+
+Para automatizar esse processo e compilar sempre que houver alteração, criamos um segundo script com o `--watch`:
+
+```json
+"sass-watch": "sass source/main.scss build/main.css --watch"
+```
+
+E executamos com:
+
+```bash
+npm run sass-watch
+```
+
+Para parar o monitoramento, usamos `Ctrl + C` no terminal.
+
+### Uso de Variáveis no Sass
+
+No Sass, variáveis são declaradas com **cifrão ($)**, seguidas do nome (em camelCase, por convenção) e o valor:
+
+```scss
+$corPrincipal: #eee;
+$corSecundaria: #111;
+```
+
+Essas variáveis podem ser utilizadas em qualquer parte do código Sass. Na compilação, o Sass substitui as variáveis pelos valores, gerando um CSS limpo e direto:
+
+```scss
+body {
+  background-color: $corPrincipal;
+}
+```
+
+Será compilado como:
+
+```css
+body {
+  background-color: #eee;
+}
+```
+
+### Diferença entre Sass e CSS puro
+
+O CSS moderno também permite criar variáveis com `--nome-da-variavel`, mas essas são **dinâmicas** e dependem do escopo (como `:root` ou um seletor). Já o Sass usa **variáveis estáticas**, substituídas no momento da compilação, com mais flexibilidade para reutilização e legibilidade.
+
+### Aninhamento de seletores
+
+No CSS tradicional:
+
+```css
+header h1 {
+  color: #111;
+}
+```
+
+No Sass:
+
+```scss
+header {
+  background-color: $corPrincipal;
+
+  h1 {
+    color: $corSecundaria;
+  }
+}
+```
+
+O Sass entende que `h1` está dentro de `header` e compila corretamente para o CSS esperado.
+
+### Pseudo-classes com `&`
+
+No CSS:
+
+```css
+button:hover {
+  background-color: red;
+}
+```
+
+No Sass:
+
+```scss
+button {
+  &:hover {
+    background-color: red;
+  }
+}
+```
+
+O `&` representa o seletor pai (`button`). Isso torna o código mais limpo e evita repetições.
+
+### Condicional com classes
+
+No Sass, também podemos usar `&.classe`:
+
+```scss
+button {
+  &.sucesso {
+    background-color: green;
+
+    &:hover {
+      background-color: $corSecundaria;
+    }
+  }
+}
+```
+
+Isso se traduz no CSS como:
+
+```css
+button.sucesso {
+  background-color: green;
+}
+
+button.sucesso:hover {
+  background-color: #111;
+}
+```
+
+### Código Final `main.scss`
+
+```scss
+$corPrincipal: #eee; 
+$corSecundaria: #111;
+
+body {
+    background-color: $corPrincipal;
+}
+
+header {
+    background-color: $corPrincipal;
+
+    h1 {
+        color: $corSecundaria;
+    }
+}
+
+button {
+    padding: 16px;
+    background-color: $corSecundaria;
+    color: $corPrincipal;
+
+    &:hover {
+        background-color: red;
+    }
+
+    &.sucesso {
+        background-color: green;
+
+        &:hover {
+            background-color: $corSecundaria;
+        }
+    }
+}
+```
+
+### Código Final `index.html`
+
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="build/main.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Nome do site</h1>
+        </div>
+    </header>
+    <button class="sucesso" type="button">Clique aqui</button>
+</body>
+</html>
+```
+
+Essa aula mostrou como o Sass permite organizar o código CSS de forma mais **modular, reutilizável e limpa**, otimizando o desenvolvimento e a manutenção dos estilos.
 
 
 
