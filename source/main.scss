@@ -1,33 +1,86 @@
-$corPrincipal: #eee;
-$corSecundaria: #111;
+@use 'config/reset';
+@use 'config/variaveis';
+@use 'sass:math';
+
+@mixin elementoForm () {
+    padding: 8px;
+    display: block;
+    width: 100%;
+    margin-bottom: 16px;
+}
+
+@function pixelParaEm ($alvoEmPixel, $contextoEmPixel:16px){
+    @return math.div($alvoEmPixel, $contextoEmPixel)+em;
+}
 
 body {
-    background-color: $corPrincipal;
+    background-color: #eee;
+}
+
+.container {
+    max-width: 1024px;
+    width: 100%;
+    margin: 0 auto;
+
+    h1 {
+        text-align: center;
+        color: #fff;
+    }
 }
 
 header {
-    background-color: $corPrincipal;
-
-    h1 {
-        color: $corSecundaria;
-    }
+    padding: 16px 0;
+    background-color: variaveis.$corPrincipal;
 }
 
-button {
-    padding: 16px;
-    background-color: $corSecundaria;
-    color: $corPrincipal;
+.form-container {
+    height: calc(100vh - 70px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-width: 760px;
 
-    &:hover {
-        background-color: red;
+    h2 {
+        font-size: pixelParaEm(40px);
+        text-align: center;
     }
 
-    &.sucesso {
-        background-color: green;
+    form {
+        width: 100%;
+        max-width: 480px;
+        margin-top: 40px;
 
-        &:hover {
-            background-color: $corSecundaria;
+        label {
+            font-weight: bold;
+            cursor: pointer
+        }
+
+        input {
+            @include elementoForm();
+            background-color: transparent;
+            border: none;
+            border-bottom: 2px solid variaveis.$corPrincipal;
+        }
+
+        button {
+            @include elementoForm();
+            background-color: variaveis.$corSecundaria;
+            border: none;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            color: #fff;
+
+            &:hover {
+                background-color: lighten(variaveis.$corSecundaria, 10%);
+            }
         }
     }
 }
 
+@media screen and (max-width: variaveis.$mobile) {
+    .container {
+        max-width: 80%;
+    }
+}

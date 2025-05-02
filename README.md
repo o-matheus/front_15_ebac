@@ -4,6 +4,8 @@
 [Aula 1 - Node JS](#aula-1---node-js)  
 [Aula 2 - Sintaxe SASS e SCSS](#aula-2---sintaxe-sass-e-scss)  
 [Aula 3 - Variáveis e estrutura no sass(SASS) ](#aula-3---variáveis-e-estrutura-no-sass-sass)  
+[Aula 4 - Reutilize CSS com Mixins](#aula-4--reutilizando-código-com-mixins-sass)  
+[Aula 5 - Funções e operadores](#aula-5--funções-e-operadores-no-sass)  
 
 ## Aula 1 - Node JS
 
@@ -417,5 +419,320 @@ button {
 
 Essa aula mostrou como o Sass permite organizar o código CSS de forma mais **modular, reutilizável e limpa**, otimizando o desenvolvimento e a manutenção dos estilos.
 
+## Aula 4 – Reutilizando código com Mixins (SASS)
 
+Nesta aula, o foco principal foi aprender a **reutilizar código com mixins** em SASS. Os objetivos foram:
+
+* Criar mixins personalizados;
+* Definir mixins com parâmetros;
+* Aplicar mixins em seletores específicos;
+* Compreender como utilizar mixins em diferentes partes do CSS.
+
+---
+
+### Estrutura inicial do projeto
+
+Começamos removendo arquivos antigos (`produto.scss`, `reset.scss` e `cores.scss`) e mantivemos apenas o `main.scss` na pasta `source`. O arquivo HTML também foi limpo, mantendo apenas a estrutura básica com o link para o `main.css` (gerado via build do SASS).
+
+---
+
+### Configuração e variáveis globais
+
+Foram criados dois arquivos SCSS:
+
+* `reset.scss`: aplicando um reset global com `box-sizing`, `margin` e `padding`;
+* `variáveis.scss`: com a variável `$fonte-principal: 'Roboto, sans-serif';`
+
+A fonte Roboto foi adicionada ao projeto via Google Fonts e aplicada no `reset.scss` com:
+
+```scss
+font-family: $fonte-principal;
+```
+
+Esses dois arquivos foram movidos para a pasta `config`, e o `reset.scss` foi importado em `main.scss` com:
+
+```scss
+@use 'config/reset';
+```
+
+---
+
+### Estrutura HTML
+
+A página foi composta por duas áreas principais:
+
+1. `<header>` com um `<div class="container">` e um `<h1>` com o texto *Projeto SASS*.
+2. `.form-container` com:
+
+   * Um `<h2>` de chamada: *Se inscreva na newsletter para receber dicas sobre CSS*;
+   * Um `<form>` com os campos:
+
+```html
+<label for="nome-completo">Nome completo</label>
+<input type="text" id="nome-completo" required>
+
+<label for="email">Seu melhor e-mail</label>
+<input type="email" id="email" required>
+
+<button type="submit">Cadastrar</button>
+```
+
+---
+
+### Estilização e layout
+
+A estrutura começou a ser estilizada no `main.scss`:
+
+#### Corpo e container
+
+```scss
+body {
+    background-color: #eee;
+}
+
+.container {
+    max-width: 1024px;
+    width: 100%;
+    margin: 0 auto;
+
+    h1 {
+        text-align: center;
+    }
+}
+```
+
+#### Header
+
+```scss
+header {
+    padding: 16px 0;
+    background-color: greenyellow;
+}
+```
+
+#### Formulário
+
+A `.form-container` foi ajustada com uso de `calc()`:
+
+```scss
+.form-container {
+    height: calc(100vh - 70px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+```
+
+> **Nota:** ao usar `flex-direction: column`, os eixos se invertem:
+>
+> * `justify-content` alinha verticalmente,
+> * `align-items` alinha horizontalmente.
+
+O formulário foi centralizado com:
+
+```scss
+form {
+    width: 100%;
+    max-width: 480px;
+    margin-top: 40px;
+}
+```
+
+---
+
+### Introdução aos Mixins
+
+Um **mixin** foi criado para centralizar estilos reutilizáveis:
+
+```scss
+@mixin elementoForm() {
+    padding: 8px;
+    display: block;
+    width: 100%;
+    margin-bottom: 16px;
+}
+```
+
+Esse mixin foi aplicado em `input` e `button`:
+
+```scss
+input {
+    @include elementoForm();
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid #000;
+}
+
+button {
+    @include elementoForm();
+}
+```
+
+Inicialmente, os estilos estavam agrupados diretamente nos seletores, mas isso causou problemas visuais, pois algumas propriedades não se aplicavam bem ao botão. A solução foi usar o mixin para compartilhar apenas as propriedades comuns.
+
+---
+
+### Mixins com parâmetros
+
+Mixins também podem aceitar **parâmetros personalizados**, como:
+
+```scss
+@mixin elementoForm($margem) {
+    margin-bottom: $margem;
+}
+```
+
+E sua chamada:
+
+```scss
+@include elementoForm(80px);
+```
+
+> Sim, é possível passar **múltiplos parâmetros**, como:
+
+```scss
+@mixin estiloPersonalizado($bg, $corTexto, $padding) {
+  background-color: $bg;
+  color: $corTexto;
+  padding: $padding;
+}
+```
+
+Esse recurso torna o CSS mais dinâmico, reutilizável e adaptável a diferentes situações visuais no projeto.
+
+## Aula 5 – Funções e Operadores no SASS
+
+Esta é a última aula do módulo introdutório de SASS. A aula anterior, considerada como aula 4, tratava da reutilização de código com mixins. A primeira aula foi apenas introdutória e não continha conteúdo técnico relevante.
+
+Nesta aula, o foco é o uso de **funções** e **operadores** no SASS. Os objetivos são:
+
+* Entender como operadores matemáticos podem ser aplicados no SASS;
+* Criar **funções personalizadas**;
+* Explorar o uso de **funções nativas** da linguagem.
+
+---
+
+### Paleta de cores personalizada
+
+O professor decidiu atualizar o esquema de cores do site utilizando a [Flat UI Colors](https://flatuicolors.com/). As cores escolhidas foram:
+
+* **Cor de fundo:** Light Blue Ballerina `#C8D6E5`
+* **Cor principal:** Aqua Velvet `#01A3A4`
+* **Cor secundária:** Jade Dust `#00D2D3`
+
+Essas cores foram adicionadas ao arquivo `variaveis.scss` com as seguintes variáveis:
+
+```scss
+// Fontes
+$fontePrincipal: "Roboto", sans-serif;
+
+// Esquema de cores
+$corDeFundo: #c8d6e5;
+$corPrincipal: #01a3a4;
+$corSecundaria: #00d2d3;
+```
+
+---
+
+### Estilizações com as novas variáveis
+
+As variáveis foram importadas em `main.scss`:
+
+```scss
+@use 'config/variaveis';
+```
+
+#### Header:
+
+* `background-color: variaveis.$corPrincipal;`
+* `h1` dentro do header com `color: #fff;`
+
+#### .form-container:
+
+* `max-width: 760px;`
+* `h2` com `font-size: pixelParaEm(40px);` e `text-align: center;`
+
+#### Label:
+
+```scss
+label {
+  font-weight: bold;
+  cursor: pointer;
+}
+```
+
+#### Botão:
+
+```scss
+button {
+  background-color: variaveis.$corSecundaria;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+  color: #fff;
+
+  &:hover {
+    background-color: lighten(variaveis.$corSecundaria, 10%);
+  }
+}
+```
+
+---
+
+### Responsividade e uso de unidades dinâmicas
+
+O professor destacou a importância de evitar valores fixos em `px` e preferir unidades relativas como `em`, principalmente para responsividade.
+
+#### Criação da função personalizada `pixelParaEm`:
+
+```scss
+@use 'sass:math';
+
+@function pixelParaEm($alvoEmPixel, $contextoEmPixel: 16px) {
+  @return math.div($alvoEmPixel, $contextoEmPixel) + em;
+}
+```
+
+Essa função evita a necessidade de fazer cálculos manuais e garante que o valor retornado seja acompanhado da unidade `em`.
+
+#### Breakpoints definidos:
+
+```scss
+// Breakpoints
+$mobile: 767px;
+$tablet: 1023px;
+```
+
+#### Uso da media query:
+
+```scss
+@media screen and (max-width: variaveis.$mobile) {
+  .container {
+    max-width: 80%;
+  }
+}
+```
+
+---
+
+### Funções nativas do SASS
+
+O professor apresentou duas funções nativas para manipulação de cores:
+
+* **`darken(cor, percentual)`**: escurece uma cor.
+* **`lighten(cor, percentual)`**: clareia uma cor.
+
+Exemplo de uso no `hover` do botão:
+
+```scss
+background-color: lighten(variaveis.$corSecundaria, 10%);
+```
+
+Essas funções são úteis para gerar variações visuais coerentes a partir das cores já definidas no projeto.
+
+---
+
+Com essas abordagens, a aula encerra o módulo introdutório de SASS com conceitos fundamentais de **reutilização de código**, **responsividade**, **funções** e **operações dinâmicas** no estilo da aplicação.
 
